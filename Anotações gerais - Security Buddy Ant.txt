@@ -1,0 +1,99 @@
+   -= Primeiro dia de produção - 15 de agosto =-
+
+  Tópicos
+ 1. Projeto
+ 2. Hardware
+ 3. Software
+ 4. Aplicativo
+ 5. Documentação
+
+/*
+
+*/
+
+1. Projeto
+
+ Sites para refazer o diagrama: SimulIDE, Wokwi.
+
+
+2. Hardware
+
+ Servo motor, Arduino Mega, HC-05, HC-04, Bateria de lideo, DC-DC e sua placa, câmera, motor shield e sua placa.
+ Firmware: 
+
+   Servo-motor (especificações técnicas): 
+ - Alimentação de apenas um servo-motor: 
+ - Alimentação de uma perna da formiga: 
+ - Alimentação de um conjunto de 3 patas: 
+ - Alimentação de todas as pernas funcionando juntas: 
+
+
+3. Sotfware
+
+  A programação do projeto é toda em linguagem C, simulada nos [...] e compilada [em...] 
+   Câmera e app:
+
+
+   Código dos movimentos:
+
+
+   Módulo bluetooth e app: 
+
+
+
+4. Aplicativo
+
+ Câmera, layout, controles, funções, tecnologia; Comunicação de app para software.
+
+ Como a câmera será conectada? A câmera será conectada pelo bluetooth 
+
+
+5. Documentação
+
+    -= Ideia anterior =-
+ - Gráfico de Gantt: 
+ - Aplicativo: funções, layout; 
+   Responsáveis: Pedro
+ - Calcúlo dos componentes que serão usados; 
+   Responsável: Vithor Carvalho
+ - Montagem: soldar a placa; 
+   Responsáveis: Gabriel
+ - Manutenção: 
+   Responsáveis: Vithor Hugo e 
+ - Placa DC-DC: Converso de tensão;
+   Responsáveis: Gabriel e Vithor Carvalho
+ - Placa Motor Shield: Permite acesso à mais terminais e protege o circuito;
+   Responsáveis: Kaique e Vithor Hugo
+ - Documentação: Vithor Hugo fica responsável pelo documento em Word; Kaique fica responsável pela produção dos slides
+
+  Funções do aplicativo: 
+ - morder/atacar
+ - soltar/abrir a garra
+ - movimentar a cabeça: apenas na dimensão horizontal
+ - câmera: pantilte é o movimento da câmera
+ - 
+
+
+__
+
+Para trabalhar com o ESP32-CAM é necessário a compra do FTDI232 USB. 
+Link abaixo recomendado para fazer essa conexão:
+https://www.youtube.com/watch?v=q-KIpFIbRMk&t=19s
+(Nome: How to program ESP32 CAM using Arduino UNO)
+
+
+Bibliotecas instaladas para usar o ESP32-CAM:
+- <esp_camera.h>
+  https://dl.espressif.com/dl/package_esp32_index.json (Colocar esse URL no Arduino IDE: file > Preferences > Aditional board URL)
+- <Wifi.h> 
+  Já é habilitada no ESP32
+- <ESPAsyncWebServer.h>
+
+__
+
+    Dificuldades atuais
+  A falta das pesquisas anteriores tem sido 
+
+  Da minha parte, eu demorei muito pra começar as pesquisas. 
+  No começo de cada tarefa minha, eu comecei a fazer a pesquisa dessa tarefa. Mas não acho que seja por questão do método de pesquisar tudo primeiro e depois produzir, talvez só o que precisasse ser diferente seria fazer uma pesquisa básica como o que fazer no esquema elétrico, quais componentes usar e por ai vai, e só depois disso fazer as pesquisa específicas e nem colocar isso como tarefa
+

@@ -1,0 +1,6 @@
+  -= Criação de componente pelo Proteus =-
+
+ A medida usada no software é de th: milésimo de polegada.
+
+ A menor distância no desenho é determinada com o um desenho quadriculado  (grade / grid / snap)
+

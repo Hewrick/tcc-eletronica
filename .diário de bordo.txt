@@ -1,0 +1,78 @@
+     -= Diário de Bordo =-
+
+[16 de Agosto (3 aula)]
+- Início do gráfico de Gantt
+
+
+[19 de Agosto (1 aula)]
+- Desenvolvimento do gráfico de Gantt (não concluído)
+
+
+[22 de Agosto (5 aulas)]
+- Desenvolvimento do gráfico de Gantt (não concluído)
+
+
+[23 de Agosto (3 aulas)]
+- Conclusão do gráfico de Gantt
+- Pesquisa sobre implementar servos motor ao projeto
+- Pesquisa sobre implementar bluetooth ao projeto
+- Pesquisa sobre implementar câmera ao projeto
+- Pesquisa sobre implementar app ao projeto
+- Pesquisa sobre implementar bateria ao projeto
+- Pesquisa sobre implementar conversor DC-DC
+- Pesquisa sobre implementar Arduino Mega ao projeto
+- Pesquisa sobre implementar um sensor HC-04
+- Pesquisa sobre implementar o motor shield
+- Pesquisa sobre o firmware do projeto
+- Pesquisa sobre programar os movimentos do corpo da formiga
+
+
+[19 de Setembro (5 aulas)]
+- Pedro - Programar movimentos de cada junta; comando de fechar garra e atacar; Programar o conjunto de patas.
+- Victor - Testar valores com o DC-DC no Proteus.
+- Vitor - 
+- Kaique - 
+
+
+[20 de Setembro (3 aulas)]
+- Revisão com o Kleber sobre o andamento das tarefas.
+- Pedro - Terminar a programação de cada junta; Terminar a programação das patas em conjunto.
+- Gabriel - Ajustar definição das tarefas desse mês (desde o período da revisão passada); Desenvolvimento do visual do app.
+
+
+[26 de Setembro (5 aulas)]
+Tarefas do dia:
+Vitor - Conectar o sensor ultrassônico aos outros componentes do hardware
+Victor - Testar limite físico dos movimentos das pernas
+Vitor e Kaique - Documentar tudo que o grupo fez na prática
+Gabriel - Documentar os esquemas elétricos
+
+O que está sendo feito:
+Gabriel - Visual da interface; Documento dos esquemas elétricos
+Kaique - Relatório do que foi feito na prática em geral
+Pedro - Código da programação das patas. E dos comandos de fechar/abrir garra
+Victor - Teste do limite físico dos servo-motores
+
+
+[Outubro, 03]
+Tarefas de hoje 
+- Gabriel e Pedro: Terminar a programação 
+- Victor e Kaique: Documentar a teoria completa do projeto
+
+O que fizemos 
+- Gabriel e Pedro: Terminar a programação
+- Victor: Ajuste dos cálculos dos componentes
+- Kaique: Documentação dessa semana e da semana passada; Refazer o circuito da placa Motor-Shield
+
+
+[Outubro, 04]
+Tarefas de hoje
+- Gabriel: Desenvolver a placa do DC-DC (Protheus ou KiCad)
+- Victor e Kaique: Documentar a teoria completa do projeto
+- Pedro: Testar formiga com todos os comandos já feitos
+
+O que fizemos
+- Gabriel: 
+- Kaique: Manutenção no circuito da placa Motor-Shield
+- Pedro: Toques finais no código da câmera
+

@@ -1,0 +1,29 @@
+    -= Aplicativo =-
+
+ Componentes relacionados:
+ - Módulo bluetooth HC-06 
+  - Como:
+   - Coleta de dados:
+    Sensores como o HC-SR04 medem a distância.
+    O acelerômetro e giroscópio (geralmente presentes em IMUs) fornecem dados sobre a orientação do drone.
+    Esses dados são processados pelo Arduino e enviados via Bluetooth para o HC-06.
+   - Transmissão:
+    O HC-06 recebe os dados do Arduino e os envia via Bluetooth para o seu dispositivo móvel.
+   - Aplicativo:
+    O aplicativo no seu celular recebe esses dados e os exibe na tela (por exemplo, um gráfico da distância medida pelo sensor ultrassônico).
+    Você pode interagir com o aplicativo, enviando comandos para o Arduino via Bluetooth. Por exemplo, você pode usar o aplicativo para controlar a câmera do drone ou definir uma altitude de voo.
+
+
+    -= Câmera =-
+
+ Componentes relacionados:
+ - 
+
+
+    -= Firmware =-
+
+ Componentes relacionados:
+ - Arduino Mega 2560 REV3 [A000067]: Placa de microcontrolador que você pode programar com firmware para controlar os diversos componentes do seu projeto.
+
+ - Módulo Bluetooth HC-06 RS232 Arduino: Módulo de comunicação que pode ser usado para enviar e receber dados do Arduino, muitas vezes necessário para interações com o firmware.
+

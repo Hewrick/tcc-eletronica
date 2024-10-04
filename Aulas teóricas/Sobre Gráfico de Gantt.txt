@@ -1,0 +1,7 @@
+   -= Gráfico de Gantt =- 
+
+ É necessário 3 tópicos principais para o gráfico:
+ - Atividade/tarefa: 
+ - Responsáveis: Nome dos responsáveis
+ - Período de tempo usado no projeto: 
+
