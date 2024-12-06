@@ -1,5 +1,0 @@
-   -= Firmware =-
-  O firmware é condicionado principalmente pelo Arduino Mega, onde serão feitas conexões do microcontrolador ao restante dos componentes. Além dos pinos de Vin e GND ligados aos barramentos de pinagem, serão conectados também os pinos de sinal entrada digital (para o sinal PWM) dos servo-motores, o TXD (transmissão) e RXD (recepção) de dados do módulo bluetooth HC-05, os pinos de Triger e Echo do sensor ultrassônico e de restante o Arduino só precisaria 
-
-
-

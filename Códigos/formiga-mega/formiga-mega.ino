@@ -1,17 +1,16 @@
-//    === Arduino Ant Robot / Hexapod ===
-//  by Dejan, https://howtomechatronics.com
-
-
 #include <Servo.h>
+#include 
 #include <SoftwareSerial.h>
+#include <HardwareSerial.h>
+#include <string.h>
 
 #define trigPin 7
 #define echoPin 6
 #define ledB 10
 
-SoftwareSerial Bluetooth(12, 9); // Arduino(RX, TX) - HC-05 Bluetooth (TX, RX)
+SoftwareSerial Bluetooth(18, 19); // Conexão Arduino(RX, TX) e App
 
-// Create servo object
+// Variaveis dos servos
 Servo s24;
 Servo s23;
 Servo s22;
@@ -83,108 +82,157 @@ int aa = 0;
 int period = 1000;
 unsigned long time_now = 0;
 
-float distance;
-long duration;
-int dataIn;
+// Variáveis de uso específico
+float distancia;
+long duracao;
+int dataIn; // Recebe código dos comandos através BLUETOOTH conectado ao app
+int dataOut; 
+String enderecoVisaoFormiga = ""; // Único dado para enviar pelo BLUETOOTH ao app
+const char idRede = "Pedro Ribeiro";
+const char senhaRede = "Hquijar256nakA";
 int m = 0;
 int h = 0;
 int t = 0;
 int att = 0;
-int speedV = 30;
+// int speedV = 30;
 
 void setup() {
-  Serial.begin(38400);
-  Bluetooth.begin(38400); // Default baud rate of the Bluetooth module
-  Bluetooth.setTimeout(1);
-  delay(20);
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  Serial.begin(38400); // Serial para printar no Serial Monitor
+  Serial2.begin(115200); // Configura "ESP32CAM" para conexão ao ESP32-CAM
+  Serial2.setTimeout(20); // Configura tempo máximo de (em miliseconds) para esperar 
+  Bluetooth.begin(115200); // Configura "Bluetooth" para conexão ao módulo HC-05
+  Bluetooth.setTimeout(20);
+
+  delay(2000);
+
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT); 
   pinMode(ledB, OUTPUT);
-  // Head
+  // Cabeça
   s15.attach(36, 600, 2400);
   s14.attach(35, 600, 2400);
-  s13.attach(34, 600, 2400); //grip
-  // Tail
-  s5.attach(26, 600, 2400); // Tail
-  // Leg 4
+  s13.attach(34, 600, 2400); //garra
+  // Rabo
+  s5.attach(26, 600, 2400); 
+  // Perna 4
   s10.attach(31, 600, 2400);
   s11.attach(32, 600, 2400);
   s12.attach(33, 600, 2400); //rot
-  // Leg 5
+  // Perna 5
   s7.attach(28, 600, 2400);
   s8.attach(29, 600, 2400);
   s9.attach(30, 600, 2400); //rot
-  // Leg 6
+  // Perna 6
   s1.attach(22, 600, 2400);
   s2.attach(23, 600, 2400);
   s3.attach(24, 600, 2400); //rot
-  // Leg 1
+  // Perna 1
   s18.attach(39, 600, 2400);
   s17.attach(38, 600, 2400);
   s16.attach(37, 600, 2400); //rot
-  // Leg 2
+  // Perna 2
   s21.attach(42, 600, 2400);
   s20.attach(41, 600, 2400);
   s19.attach(40, 600, 2400); //rot
-  // Leg 3
+  // Perna 3
   s24.attach(45, 600, 2400);
   s23.attach(44, 600, 2400);
   s22.attach(43, 600, 2400); //rot
 
-  // == Move to initial position
-  // Head
+  // Posição inicial
+  // Cabeça
   s15.write(72);
   s14.write(50);
-  s13.write(90); // Grip
+  s13.write(90); // Garra
   
-  s5.write(65); // Tail
+  s5.write(65); // Rabo
   
-  // Leg 4
+  // Perna 4
   s10.write(65);
   s11.write(35);
   s12.write(40);
-  // Leg 5
+  // Perna 5
   s7.write(80);
   s8.write(50);
   s9.write(25);
-  // Leg 6
+  // Perna 6
   s1.write(90);
   s2.write(45);
   s3.write(60);
 
-  // Leg 1
+  // Perna 1
   s18.write(60);
   s17.write(90);
   s16.write(100);
-  // Leg 2
+  // Perna 2
   s21.write(50);
   s20.write(85);
   s19.write(75);
-  // Leg 3
+  // Perna 3
   s24.write(50);
   s23.write(80);
   s22.write(80);
 
   delay(3000);
 }
-void loop() {
 
-  // Check for incoming data
+
+void loop() {
+  
+  if (Serial2.available() > 0) {
+    enderecoVisaoFormiga = Serial2.read(); // Receber IP da ESP32-CAM
+    Bluetooth.println(enderecoVisaoFormiga);
+  }
+
+  Serial2.println(idRede);
+  delay(200)
+  Serial2.println(senhaRede);
+  
+
+  // Verifica se bluetooth está recebendo dados
   if (Bluetooth.available() > 0) {
-    dataIn = Bluetooth.read();  // Read the data
+    dataIn = Bluetooth.read(); // Lê os dados
     Serial.println(dataIn);
-    if (dataIn == 2) {
-      m = 2;
+
+    // INICIO - Entrada de comandos (movimento, ataque e controle de garra)
+    
+    // Envia
+    if (dataIn == 1) {
+      idRede = Bluetooth.read();
+      Serial2.println(idRede);
+      delay(200);
+      senhaRede = Bluetooth.read();
+      Serial2.println(senhaRede);
     }
+
+    /*// Processa IP e envia à variável de endereço para a visão da formiga
+    if (dataIn == 2) {
+      dataOut = enderecoVisaoFormiga;
+      Bluetooth.println(dataOut);
+    }
+    */
+
+    // Anda para frente
     if (dataIn == 3) {
       m = 3;
     }
+
+    // Anda para trás
     if (dataIn == 4) {
       m = 4;
     }
+
+    // Gira sentido antihorário
     if (dataIn == 5) {
       m = 5;
     }
+
+    // Gira sentido horário
+    if (dataIn == 6) {
+      m = 6;
+    }
+
+    /*
     if (dataIn == 10) {
       t = 10;
     }
@@ -194,155 +242,166 @@ void loop() {
     if (dataIn >= 15) {
       speedV = dataIn;
     }
+    */
+    // FIM - Entrada de comandos
   }
-  // Move forward
-  if (m == 2) {
-    moveLeg1();
-    moveLeg3();
-    moveLeg5();
-    if (l1status == HIGH) {
-      moveLeg2();
-      moveLeg4();
-      moveLeg6();
-    }
-  }
-  // Rotate left
+
+  // Move frente
   if (m == 3) {
-    moveHeadLeft();
-    moveLeg1();
-    moveLeg3();
-    moveLeg5Left();
+    movePerna1();
+    movePerna3();
+    movePerna5();
     if (l1status == HIGH) {
-      moveLeg2();
-      moveLeg4Left();
-      moveLeg6Left();
+      movePerna2();
+      movePerna4();
+      movePerna6();
     }
   }
-  // Rotate right
-  if (m == 4) {
-    moveHeadRight();
-    moveLeg1Right();
-    moveLeg3Right();
-    moveLeg5();
-    if (l1status == HIGH) {
-      moveLeg2Right();
-      moveLeg4();
-      moveLeg6();
-    }
-  }
+
   // Move reverse
-  if (m == 5) {
-    moveLeg1Rev();
-    moveLeg3Rev();
-    moveLeg5Rev();
+  if (m == 4) {
+    movePerna1Rev();
+    movePerna3Rev();
+    movePerna5Rev();
     if (l1status == HIGH) {
-      moveLeg2Rev();
-      moveLeg4Rev();
-      moveLeg6Rev();
+      movePerna2Rev();
+      movePerna4Rev();
+      movePerna6Rev();
     }
   }
-  // Bite
-  if (dataIn == 6) {
-    bite();
+
+  // Rotação antihorário (esquerda)
+  if (m == 5) {
+    moveCabecaEsquerda();
+    movePerna1();
+    movePerna3();
+    movePerna5Esquerda();
+    if (l1status == HIGH) {
+      movePerna2();
+      movePerna4Esquerda();
+      movePerna6Esquerda();
+    }
   }
-  // Attack
+
+  // Rotação horário (direita)
+  if (m == 6) {
+    moveCabecaDireita();
+    movePerna1Direita();
+    movePerna3Direita();
+    movePerna5();
+    if (l1status == HIGH) {
+      movePerna2Direita();
+      movePerna4();
+      movePerna6();
+    }
+  }
+
+  // Fecha Garra
   if (dataIn == 7) {
-    prepareAttack();
+    fecha();
+  }
+
+  // Abre Garra
+  if (dataIn == 8) {
+    abre();
+  }
+
+  // Ataque
+  if (dataIn == 9) {
+    prepararAtaque();
     if (aStatus == HIGH) {
       while (a == 0) {
         delay(1000);
         a = 1;
       }
-      attack();
+      ataque();
       if (attStatus == HIGH) {
         while (aa == 0) {
           delay(2000);
           aa = 1;
-        } attStatus = LOW;
+        } 
+        attStatus = LOW;
       }
     }
   }
-  // Grab
-  if (dataIn == 8) {
-    grab();
-  }
-  // Drop
-  if (dataIn == 9) {
-    drop();
-  }
 
-  // Tail
-  if (t == 10) {
-    tail();
-  }
-  // Head
-  if (h == 11) {
-    moveHead();
-  }
-
-  if (dataIn == 12) {
-    initialPosTail();
-  }
-  if (dataIn == 13) {
-    initialPosHead();
-  }
-  // Initial and resting position 
   if (dataIn == 0) {
-    initialPosition();
+    posicaoinicial();
 
-    // Get the distance from the ultrasonic sensor
-    if (getDistance() > 40) {
+    if (pegarDistancia() > 40) {
       att = 0;
     }
-    if (getDistance() <= 40) {
+    if (pegarDistancia() <= 40) {
       att = 1;
       dataIn = 99;
     }
-    // Monitor the battery voltage
-    int sensorValue = analogRead(A3);
-    float voltage = sensorValue * (5.00 / 1023.00) * 2.9; // Convert the reading values from 5v to suitable 12V i
-    Serial.println(voltage);
-    // If voltage is below 11V turn on the LED
-    if (voltage < 11) {
+    
+    
+    int valorSensor = analogRead(A3);
+    float tensao = valorSensor * (5.00 / 1023.00) * 2.9;
+    //Serial.println(tensao);
+    
+    if (tensao < 11) {
       digitalWrite(ledB, HIGH);
     }
     else {
       digitalWrite(ledB, LOW);
     }
   }
-  // If there is an object in front of the sensor prepare for attack
+  
+  /*
+  // mordida
+  if (dataIn == 6) {
+    mordida();
+  }
+  // Rabo
+  if (t == 10) {
+    rabo();
+  }
+  // Cabeça
+  if (h == 11) {
+    moveCabeca();
+  }
+  if (dataIn == 12) {
+    posicaoInicialRabo();
+  }
+  if (dataIn == 13) {
+    posicaoInicialCabeca();
+  }
+  */
+
   if (att == 1) {
-    prepareAttack();
+    prepararAtaque();
     if (aStatus == HIGH) {
       while (a == 0) {
         delay(2000);
         a = 1;
       }
-      if (getDistance() > 30) {
+      if (pegarDistancia() > 30) {
         att = 2;
         a = 0;
         aStatus = LOW;
-        initialPosHead();
+        posicaoInicialCabeca();
       }
-      if (getDistance() < 30) {
+      if (pegarDistancia() < 30) {
         att = 3;
         a = 0;
         aStatus = LOW;
-        initialPosHead();
+        posicaoInicialCabeca();
       }
     }
   }
-  // If there is no longer object in front, dismiss the attack
+
   if (att == 2) {
-    dismissAttack();
+    cancelaAtaque();
     if (aStatus == HIGH) {
       dataIn = 0;
       att = 0;
     }
   }
-  // If there is closer to the sensor attack
+
   if (att == 3) {
-    attack();
+    ataque();
     if (attStatus == HIGH) {
       while (aa == 0) {
         delay(2000);
@@ -356,30 +415,34 @@ void loop() {
       }
       dataIn = 0;
       att = 0;
-      initialPosHead();
+      posicaoInicialCabeca();
     }
   }
-  delay(speedV);
+  //delay(speedV);
 }
 
-// === ATTACK === //
+// === Sessão de funções ===
 
-void prepareAttack() {
-  // LEG 1
+
+
+// Ataque
+
+void prepararAtaque() {
+  // Perna 1
   if (i1H1 <= 15) {
-    //Leg 1
+    //Perna 1
     s18.write(60 - i1H1);
     s17.write(90 - i1H1);
-    // Leg 3
+    // Perna 3
     s24.write(50 + i1H1 / 2);
     s23.write(80 + i1H1);
-    // Leg 4
+    // Perna 4
     s10.write(65 + i1H1);
     s11.write(35 + i1H1);
-    // Leg 6
+    // Perna 6
     s1.write(90 - i1H1);
     s2.write(45 - i1H1);
-    // Head
+    // Cabeça
     s14.write(50 - i1H1 * 2);
     s13.write(90 - i1H1);
 
@@ -398,22 +461,22 @@ void prepareAttack() {
   }
 }
 
-void dismissAttack() {
+void cancelaAtaque() {
   // LEG 1
   if (i2H1 <= 15) {
-    //Leg 1
+    //Perna 1
     s18.write(45 + i2H1);
     s17.write(75 + i2H1);
-    // Leg 3
+    // Perna 3
     s24.write(57 - i2H1 / 2);
     s23.write(95 - i2H1);
-    // Leg 4
+    // Perna 4
     s10.write(80 - i2H1);
     s11.write(50 - i2H1);
-    // Leg 6
+    // Perna 6
     s1.write(75 + i2H1);
     s2.write(30 + i2H1);
-    // Head
+    // Cabeça
     s14.write(20 + i2H1 * 2);
     s13.write(75 + i2H1);
   }
@@ -431,22 +494,22 @@ void dismissAttack() {
   }
 }
 
-void attack() {
-  // LEG 1
+void ataque() {
+  // Perna 1
   if (i3H1 <= 10) {
-    //Leg 1
+    //Perna 1
     s18.write(45 + i3H1 * 2);
     s17.write(75 + i3H1 * 3);
-    // Leg 3
+    // Perna 3
     s24.write(57 - i3H1 / 2);
     s23.write(95 - i3H1 * 3);
-    // Leg 4
+    // Perna 4
     s10.write(80 - i3H1 * 2);
     s11.write(50 - i3H1 * 3);
-    // Leg 6
+    // Perna 6
     s1.write(75 + i3H1 * 2);
     s2.write(30 + i3H1 * 3);
-    // Head
+    // Cabeça
     s14.write(20 + i3H1 * 2);
     s13.write(75 + i3H1 * 3);
   }
@@ -463,19 +526,19 @@ void attack() {
     attStatus = HIGH;
   }
   if (i3H1 >= 16 & i4H1 < 15) {
-    //Leg 1
+    //Perna 1
     s18.write(65 - i4H1 / 3);
     s17.write(105 - i4H1);
-    // Leg 3
+    // Perna 3
     //s24.write(50 + i4H1 / 2);
     s23.write(65 + i4H1);
-    // Leg 4
+    // Perna 4
     s10.write(60 + i4H1 / 3);
     s11.write(20 + i4H1);
-    // Leg 6
+    // Perna 6
     s1.write(95 - i4H1 / 5);
     s2.write(60 - i4H1);
-    // Head
+    // Cabeça
     s14.write(40 + i4H1 / 2);
     s13.write(105 - i4H1);
   }
@@ -493,7 +556,8 @@ void attack() {
   }
 }
 
-void moveHead() {
+/*
+void moveCabeca() {
   if (i0H1 <= 40) {
     s15.write(72 + i0H1);
     i0H1++;
@@ -534,7 +598,7 @@ void moveHead() {
   }
 }
 
-void bite() {
+void mordida() {
   if (i1H1 <= 20) {
     s13.write(90 - i1H1);
     i1H1++;
@@ -561,37 +625,7 @@ void bite() {
   }
 }
 
-void moveHeadLeft() {
-  if (i0H1 <= 25) {
-    s14.write(50 - i0H1);
-    s15.write(72 - i0H1);
-    s5.write(65 + i0H1); // Tail
-    i0H1++;
-  }
-}
-void moveHeadRight() {
-  if (i2H1 <= 25) {
-    s14.write(50 - i2H1);
-    s15.write(72 + i2H1);
-    s5.write(65 - i2H1); // Tail
-    i2H1++;
-  }
-}
-
-void grab() {
-  if (i1H1 <= 20) {
-    s13.write(90 + i1H1);
-    i1H1++;
-  }
-}
-void drop() {
-  if (i2H1 <= 20) {
-    s13.write(110 - i2H1);
-    i2H1++;
-  }
-}
-
-void tail() {
+void rabo() {
   if (i0T1 <= 25) {
     s5.write(65 - i0T1);
     i0T1++;
@@ -621,22 +655,56 @@ void tail() {
     i6T1++;
   }
 }
+*/
 
-void moveLeg1() {
-  // Swign phase - move leg though air - from initial to final position
-  // Rise the leg
+void moveCabecaEsquerda() {
+  if (i0H1 <= 25) {
+    s14.write(50 - i0H1);
+    s15.write(72 - i0H1);
+    s5.write(65 + i0H1); // Tail
+    i0H1++;
+  }
+}
+
+void moveCabecaDireita() {
+  if (i2H1 <= 25) {
+    s14.write(50 - i2H1);
+    s15.write(72 + i2H1);
+    s5.write(65 - i2H1); // Tail
+    i2H1++;
+  }
+}
+
+void fecha() {
+  if (i1H1 <= 20) {
+    s13.write(90 + i1H1);
+    i1H1++;
+  }
+}
+
+void abre() {
+  if (i2H1 <= 20) {
+    s13.write(110 - i2H1);
+    i2H1++;
+  }
+}
+
+
+
+void movePerna1() {
+  // Levanta a perna
   if (i1L1 <= 10) {
     s18.write(60 - i1L1 * 2);
     s17.write(90 - i1L1 * 3);
     i1L1++;
   }
-  // Rotate the leg
+  // Rotaciona a perna
   if (i2L1 <= 30) {
     s16.write(100 - i2L1);
     i2L1++;
 
   }
-  // Move back to touch the ground
+  // Volta a posição para tocar o chão
   if (i2L1 > 20 & i3L1 <= 10) {
     s18.write(40 + i3L1 * 2);
     s17.write(60 + i3L1 * 3);
@@ -657,9 +725,9 @@ void moveLeg1() {
     i4L1 = 0;
     i5L1 = 0;
   }
-  // Each iteration or step is executed in the main loop section where there is also a delay time for controlling the speed of movement
 }
-void moveLeg2() {
+
+void movePerna2() {
   if (i1L2 <= 10) {
     s21.write(50 - i1L2 * 2);
     s20.write(80 - i1L2 * 3);
@@ -688,7 +756,7 @@ void moveLeg2() {
   }
 }
 
-void moveLeg3() {
+void movePerna3() {
   if (i1L1 <= 10) {
     s24.write(50 - i1L1 * 2);
     s23.write(80 - i1L1 * 3);
@@ -706,7 +774,7 @@ void moveLeg3() {
   }
 }
 
-void moveLeg4() {
+void movePerna4() {
   if (i1L2 <= 10) {
     s10.write(65 + i1L2 * 2);
     s11.write(35 + i1L2 * 3);
@@ -724,7 +792,7 @@ void moveLeg4() {
   }
 }
 
-void moveLeg5() {
+void movePerna5() {
   if (i1L1 <= 10) {
     s7.write(80 + i1L1 * 2);
     s8.write(50 + i1L1 * 3);
@@ -742,7 +810,7 @@ void moveLeg5() {
   }
 }
 
-void moveLeg6() {
+void movePerna6() {
   if (i1L2 <= 10) {
     s1.write(90 + i1L2 * 2);
     s2.write(45 + i1L2 * 3);
@@ -759,11 +827,11 @@ void moveLeg6() {
   }
 }
 
-void moveLeg1Rev() {
+void movePerna1Rev() {
   if (i1L1 <= 10) {
     s18.write(60 - i1L1 * 2);
     s17.write(90 - i1L1 * 3);
-    Serial.println(s17.read());
+    //Serial.println(s17.read());
     i1L1++;
   }
   if (i2L1 <= 30) {
@@ -774,7 +842,7 @@ void moveLeg1Rev() {
   if (i2L1 > 20 & i3L1 <= 10) {
     s18.write(40 + i3L1 * 2);
     s17.write(60 + i3L1 * 3);
-    Serial.println(s17.read());
+    //Serial.println(s17.read());
     i3L1++;
   }
   if (i2L1 >= 30) {
@@ -790,7 +858,8 @@ void moveLeg1Rev() {
     i5L1 = 0;
   }
 }
-void moveLeg2Rev() {
+
+void movePerna2Rev() {
   if (i1L2 <= 10) {
     s21.write(50 - i1L2 * 2);
     s20.write(80 - i1L2 * 3);
@@ -819,7 +888,7 @@ void moveLeg2Rev() {
   }
 }
 
-void moveLeg3Rev() {
+void movePerna3Rev() {
   if (i1L1 <= 10) {
     s24.write(50 - i1L1 * 2);
     s23.write(80 - i1L1 * 3);
@@ -837,7 +906,7 @@ void moveLeg3Rev() {
   }
 }
 
-void moveLeg4Rev() {
+void movePerna4Rev() {
   if (i1L2 <= 10) {
     s10.write(65 + i1L2 * 2);
     s11.write(35 + i1L2 * 3);
@@ -855,7 +924,7 @@ void moveLeg4Rev() {
   }
 }
 
-void moveLeg5Rev() {
+void movePerna5Rev() {
   if (i1L1 <= 10) {
     s7.write(80 + i1L1 * 2);
     s8.write(50 + i1L1 * 3);
@@ -873,7 +942,7 @@ void moveLeg5Rev() {
   }
 }
 
-void moveLeg6Rev() {
+void movePerna6Rev() {
   if (i1L2 <= 10) {
     s1.write(90 + i1L2 * 2);
     s2.write(45 + i1L2 * 3);
@@ -890,7 +959,7 @@ void moveLeg6Rev() {
   }
 }
 
-void moveLeg1Right() {
+void movePerna1Direita() {
   if (i1L1 <= 10) {
     s18.write(60 - i1L1 * 2);
     s17.write(90 - i1L1 * 3);
@@ -919,7 +988,8 @@ void moveLeg1Right() {
     i5L1 = 0;
   }
 }
-void moveLeg2Right() {
+
+void movePerna2Direita() {
   if (i1L2 <= 10) {
     s21.write(50 - i1L2 * 2);
     s20.write(80 - i1L2 * 3);
@@ -948,7 +1018,7 @@ void moveLeg2Right() {
   }
 }
 
-void moveLeg3Right() {
+void movePerna3Direita() {
   if (i1L1 <= 10) {
     s24.write(50 - i1L1 * 2);
     s23.write(80 - i1L1 * 3);
@@ -966,7 +1036,7 @@ void moveLeg3Right() {
   }
 }
 
-void moveLeg4Left() {
+void movePerna4Esquerda() {
   if (i1L2 <= 10) {
     s10.write(65 + i1L2 * 2);
     s11.write(35 + i1L2 * 3);
@@ -984,7 +1054,7 @@ void moveLeg4Left() {
   }
 }
 
-void moveLeg5Left() {
+void movePerna5Esquerda() {
   if (i1L1 <= 10) {
     s7.write(80 + i1L1 * 2);
     s8.write(50 + i1L1 * 3);
@@ -1002,7 +1072,7 @@ void moveLeg5Left() {
   }
 }
 
-void moveLeg6Left() {
+void movePerna6Esquerda() {
   if (i1L2 <= 10) {
     s1.write(90 + i1L2 * 2);
     s2.write(45 + i1L2 * 3);
@@ -1019,7 +1089,7 @@ void moveLeg6Left() {
   }
 }
 
-void initialPosTail() {
+void posicaoInicialRabo() {
   i0T1 = 0;
   i1T1 = 0;
   i2T1 = 0;
@@ -1030,7 +1100,7 @@ void initialPosTail() {
   t = 0;
 }
 
-void initialPosHead() {
+void posicaoInicialCabeca() {
   attStatus = LOW;
   aStatus = LOW;
   i0H1 = 0;
@@ -1046,7 +1116,7 @@ void initialPosHead() {
   aa = 0;
 }
 
-void initialPosition() {
+void posicaoinicial() {
   a = 0;
   aa = 0;
   m = 0;
@@ -1054,35 +1124,35 @@ void initialPosition() {
   l2status = LOW;
   aStatus = LOW;
   attStatus = LOW;
-  // Head
+  // Cabeça
   s15.write(72);
   s14.write(55);
-  s13.write(90); // Grip
+  s13.write(90); // garra
 
-  s5.write(65); // Tail
+  s5.write(65); // rabo
 
-  // Leg 4
+  // Perna 4
   s10.write(65);
   s11.write(35);
   s12.write(40);
-  // Leg 5
+  // Perna 5
   s7.write(80);
   s8.write(50);
   s9.write(25);
-  // Leg 6
+  // Perna 6
   s1.write(90);
   s2.write(45);
   s3.write(60);
 
-  // Leg 1
+  // Perna 1
   s18.write(60);
   s17.write(90);
   s16.write(100);
-  // Leg 2
+  // Perna 2
   s21.write(50);
   s20.write(80);
   s19.write(75);
-  // Leg 3
+  // Perna 3
   s24.write(50);
   s23.write(80);
   s22.write(80);
@@ -1119,86 +1189,15 @@ void initialPosition() {
   i6L2 = 0;
 }
 
-//===== getDistance - Custom Function
-int getDistance() {
-  // Clears the trigPin
+
+// === Identificar Distancia ===
+int pegarDistancia() {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
-  // Calculating the distance
-  distance = duration * 0.034 / 2; // distance in cm
-  return distance;
+  duracao = pulseIn(echoPin, HIGH);
+  distancia = duracao * 0.034 / 2;
+  return distancia;
 }
-
-// Explicação do ChatGPT
-/*
-Code Breakdown
-Libraries Included:
-
-#include <Servo.h>: For controlling servo motors.
-#include <SoftwareSerial.h>: For serial communication with Bluetooth.
-Pin Definitions:
-
-trigPin and echoPin: Used for ultrasonic distance measurement.
-ledB: Used for indicating battery status.
-Bluetooth Configuration:
-
-A SoftwareSerial instance is created to communicate with a Bluetooth module (HC-05).
-Servo Objects:
-
-Multiple Servo objects are created (e.g., s1, s2, ..., s24) for controlling various parts of a robot.
-Variable Initialization:
-
-Multiple integer and boolean variables are declared for controlling the states and movements of the servos and the robot.
-Setup Function:
-
-Initializes serial communication.
-Configures pin modes.
-Attaches servos to specific pins and sets their initial positions.
-Loop Function:
-
-Reads data from Bluetooth and sets corresponding actions based on received commands (e.g., move, rotate, attack).
-Handles various movements by calling different functions depending on the command received.
-Uses a distance sensor to adjust behavior (e.g., prepare for an attack if an object is detected).
-Movement Functions:
-
-Functions like moveLeg1(), bite(), attack(), etc., define how each part of the robot should move.
-Each movement function controls servos based on their states, using a series of if-statements to increment control variables.
-Debugging Sequence
-Check Setup:
-
-Verify the wiring for servos, Bluetooth module, and ultrasonic sensor.
-Confirm that the correct pins are defined in the code and match the hardware setup.
-Initial Communication Test:
-
-Ensure the Bluetooth connection is functioning correctly. Use a Bluetooth terminal app to send commands and check if data is received correctly.
-Distance Sensor Testing:
-
-Test the ultrasonic sensor separately to ensure it returns correct distance measurements. Print the distance values to the serial monitor.
-Servo Functionality:
-
-Manually call each movement function (e.g., moveLeg1()) in the loop() function to test individual servo movements.
-Observe if the servos respond correctly to commands.
-Debugging Data Input:
-
-Use Serial.println(dataIn); to confirm that the commands sent via Bluetooth are being read properly.
-Check State Variables:
-
-Monitor the boolean and integer state variables (like m, att, aStatus) to ensure they change as expected with incoming commands.
-Condition Coverage:
-
-Review if-statements within the loop to ensure all conditions are being met and handled properly (e.g., ensuring the robot can move forward, rotate, etc.).
-Final Testing:
-
-Test the robot's overall functionality by sending a series of commands to see if all movements (e.g., attack, grab, drop) perform as intended in sequence.
-Error Handling:
-
-Implement checks or print statements to catch unexpected values or states during execution.
-Conclusion
-By following this breakdown and debugging sequence, you can systematically test and verify each component of the code and the hardware, ensuring the robot functions correctly. If you encounter specific issues during debugging, focus on the related functions and pin configurations for further troubleshooting.
-*/
