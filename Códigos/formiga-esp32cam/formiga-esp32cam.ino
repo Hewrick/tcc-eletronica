@@ -149,7 +149,7 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("");
-  Serial.println("WiFi connected");
+  Serial.println("WiFi conectado");
 
   startCameraServer();
   
@@ -157,10 +157,10 @@ void setup() {
   String site = "http://"+ip.toString()+":81";
   
   
-  Serial.print("Camera Ready! Use '");
+  Serial.print("Câmera pronta! Use '");
   Serial.print(site);
 
-  Serial.println("' to connect");
+  Serial.println("' para stream");
 
   Serial2.println(site);
 }
