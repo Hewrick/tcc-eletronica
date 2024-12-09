@@ -1,5 +1,4 @@
 #include <Servo.h>
-#include 
 #include <SoftwareSerial.h>
 #include <HardwareSerial.h>
 #include <string.h>
@@ -87,7 +86,7 @@ float distancia;
 long duracao;
 int dataIn; // Recebe código dos comandos através BLUETOOTH conectado ao app
 int dataOut; 
-String enderecoVisaoFormiga = ""; // Único dado para enviar pelo BLUETOOTH ao app
+String enderecoVisaoFormiga = ""; // Único dado para enviar do BLUETOOTH ao app
 const char idRede = "Pedro Ribeiro";
 const char senhaRede = "Hquijar256nakA";
 int m = 0;
@@ -196,7 +195,7 @@ void loop() {
 
     // INICIO - Entrada de comandos (movimento, ataque e controle de garra)
     
-    // Envia
+    /*// Envia credenciais ao ESP32-CAM
     if (dataIn == 1) {
       idRede = Bluetooth.read();
       Serial2.println(idRede);
@@ -205,7 +204,7 @@ void loop() {
       Serial2.println(senhaRede);
     }
 
-    /*// Processa IP e envia à variável de endereço para a visão da formiga
+    // Processa IP e envia à variável de endereço para a visão da formiga
     if (dataIn == 2) {
       dataOut = enderecoVisaoFormiga;
       Bluetooth.println(dataOut);

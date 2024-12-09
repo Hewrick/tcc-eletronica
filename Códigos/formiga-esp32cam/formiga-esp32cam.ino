@@ -46,7 +46,7 @@ void setupLedFlash(int pin);
 
 // Sessão de variaveis
 IPAddress ip; // Variável para obter o IP da rede
-String dataIn; // Variável para receber credenciais da rede WiFi
+int dataIn = 0; // Variável para receber credenciais da rede WiFi
 String site; // Variável para enviar o endereço da câmera
 
 void setup() {
@@ -166,21 +166,21 @@ void setup() {
 }
 
 void loop() {
-  /*
+  
   if (Serial2.available() > 0) {
     dataIn = Serial2.read();
-    
-    Serial.print(dataIn);
-    Serial.println(" comando enviado pelo Arduino Mega");
-    Serial.println();
-    
-    Serial.print("'http://");
-    Serial.print(ip);
-    Serial.println(":81'");
-    Serial.println(" Stream da câmera.");
-    Serial.println();
-
     Serial2.println(ip);
   }
+
+  /*
+  Serial.print(dataIn);
+  Serial.print(" comando enviado pelo Arduino Mega");
+  Serial.println();
+
+  Serial.print("Stream da câmera: ");
+  Serial.print("'http://");
+  Serial.print(ip);
+  Serial.println(":81' ");
+  Serial.println();
   */
 }

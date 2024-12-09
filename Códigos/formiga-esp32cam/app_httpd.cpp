@@ -84,6 +84,7 @@
 #define CONFIG_LED_MAX_INTENSITY 255
 
 int led_duty = 0;
+//linha antiga: bool isStreaming = false;
 bool isStreaming = false;
 
 #endif
